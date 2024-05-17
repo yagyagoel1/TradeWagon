@@ -1,8 +1,9 @@
-import express from "express";
+import express, { Request, Response } from "express";
 import cors from "cors";
 import cookieParser from "cookie-parser";
 import { rateLimit } from "express-rate-limit";
 import helmet from "helmet";
+import { asyncHandler } from "./utils/AsyncHandler";
 
 const limiter = rateLimit({
   windowMs: 15 * 60 * 1000, // 15 minutes
@@ -28,6 +29,13 @@ app.use(express.urlencoded({ extended: true, limit: "50kb" }));
 app.use(express.static("public"));
 app.use(cookieParser());
 
+//health check route
+app.get(
+  "/",
+  asyncHandler((req: Request, res: Response) => {
+    res.status(200).json({ message: "Is Healthy" });
+  })
+);
 /*
 import userRouter from "./routes/user.route.js";
 
