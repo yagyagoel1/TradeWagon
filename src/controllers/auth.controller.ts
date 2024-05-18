@@ -9,7 +9,7 @@ import { asyncHandler } from "../utils/AsyncHandler";
 import { Request, Response } from "express";
 import { emailQueue } from "../utils/jobs/sendEmail.job";
 import { compareHash } from "../utils/hashing";
-import { generateToken } from "../utils/generateToken";
+import { generateToken } from "../utils/tokenHandling";
 const signup = asyncHandler(async (req: Request, res: Response) => {
   const { email, password, fullName } = req.body;
   const validation = validateSignup({ email, password, fullName });
@@ -88,5 +88,17 @@ const signin = asyncHandler(async (req: Request, res: Response) => {
     })
     .json({ message: "User logged in successfully" });
 });
+const logout = asyncHandler(async (req: Request, res: Response) => {
+  const RefreshedToken = await RefreshingTokens(req.user?.email, "", "");
+  if (!RefreshedToken) {
+    throw new ApiError(500, "Internal server error refreshing tokens");
+  }
 
-export { signup, signin };
+  return res
+    .status(200)
+    .clearCookie("accessToken")
+    .clearCookie("refreshToken")
+    .json({ message: "User logged out successfully" });
+});
+
+export { signup, signin, logout };
