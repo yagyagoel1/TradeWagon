@@ -4,8 +4,8 @@ const asyncHandler = (requestHandler: any) => {
     try {
       await requestHandler(req, res);
     } catch (error: any) {
-      // console.error("error while listening ", error);
-      return res.status(500).json({ message: error.message });
+      console.error("error while listening ", error);
+      return res.status(500).json({ message: "oops something went wrong" });
     }
   };
 };
