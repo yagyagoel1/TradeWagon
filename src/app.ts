@@ -29,7 +29,6 @@ app.use(express.urlencoded({ extended: true, limit: "50kb" }));
 app.use(express.static("public"));
 app.use(cookieParser());
 
-import "./utils/jobs/sendEmail.job.ts";
 //health check route
 app.get(
   "/",
@@ -37,11 +36,9 @@ app.get(
     res.status(200).json({ message: "Is Healthy" });
   })
 );
-/*
-import userRouter from "./routes/user.route.js";
 
-//routes declaration
+import authRouter from "./routes/auth.route";
 
-app.use("/api/v1/users", userRouter)*/
+app.use("/api/v1/auth", authRouter);
 
 export default app;

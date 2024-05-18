@@ -9,6 +9,9 @@ export const findUserByEmail = async (email: string) => {
     },
     select: {
       id: true,
+      email: true,
+      password: true,
+      fullName: true,
     },
   });
 };
@@ -23,6 +26,24 @@ export const createUser = async (data: {
       email: data.email,
       password: hashedPassword,
       fullName: data.fullName,
+    },
+    select: {
+      id: true,
+    },
+  });
+};
+export const RefreshingTokens = async (
+  email: string,
+  accessToken: string,
+  refreshToken: string
+) => {
+  return await prisma.user.update({
+    where: {
+      email,
+    },
+    data: {
+      accessToken,
+      refreshToken,
     },
     select: {
       id: true,

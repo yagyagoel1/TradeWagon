@@ -11,5 +11,11 @@ const validateSignup = (data: {
   });
   return schema.safeParse(data);
 };
-
-export { validateSignup };
+const validateSignin = (data: { email: string; password: string }) => {
+  const schema = zod.object({
+    email: zod.string().email(),
+    password: zod.string().min(8),
+  });
+  return schema.safeParse(data);
+};
+export { validateSignup, validateSignin };
