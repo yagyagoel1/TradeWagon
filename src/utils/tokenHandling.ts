@@ -8,3 +8,12 @@ export const generateToken = async (
   const token = await jwt.sign(payload, secret, { expiresIn: expiry });
   return token;
 };
+
+export const verifyToken = async (token: string) => {
+  try {
+    const user = await jwt.verify(token, process.env.ACCESSTOKEN || "secret");
+    return user;
+  } catch (error) {
+    return null;
+  }
+};

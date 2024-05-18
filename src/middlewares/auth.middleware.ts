@@ -10,7 +10,14 @@ declare global {
   }
 }
 
-const verifyUser = async (req: Request, res: Response, next: NextFunction) => {
+export const verifyUser = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  //add session management middleware
+  //add ip based checks
+
   try {
     const token = req.cookies.accessToken;
     if (!token) {
