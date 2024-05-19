@@ -2,6 +2,7 @@ import {
   RefreshingTokens,
   createUser,
   findUserByEmail,
+  findUserById,
 } from "../databaseCalls/user.database";
 import { validateSignin, validateSignup } from "../schema/auth.schema";
 import { ApiError } from "../utils/ApiError";
@@ -9,7 +10,9 @@ import { asyncHandler } from "../utils/AsyncHandler";
 import { Request, Response } from "express";
 import { emailQueue } from "../utils/jobs/sendEmail.job";
 import { compareHash } from "../utils/hashing";
-import { generateToken } from "../utils/tokenHandling";
+import { generateToken, verifyToken } from "../utils/tokenHandling";
+import { ApiResponse } from "../utils/ApiResponse";
+
 const signup = asyncHandler(async (req: Request, res: Response) => {
   const { email, password, fullName } = req.body;
   const validation = validateSignup({ email, password, fullName });
@@ -67,8 +70,7 @@ const signin = asyncHandler(async (req: Request, res: Response) => {
 
   const RefreshedToken = await RefreshingTokens(
     userExists?.email || "",
-    accessToken,
-    refreshToken
+    accessToken
   );
   if (!RefreshedToken) {
     throw new ApiError(500, "Internal server error refreshing tokens");
@@ -76,29 +78,57 @@ const signin = asyncHandler(async (req: Request, res: Response) => {
 
   return res
     .status(200)
-    .cookie("accessToken", accessToken, {
-      httpOnly: true,
-      sameSite: "strict",
-      secure: true,
-    })
+
     .cookie("refreshToken", refreshToken, {
       httpOnly: true,
       sameSite: "strict",
       secure: true,
     })
-    .json({ message: "User logged in successfully" });
+    .json(new ApiResponse(200, "User logged in successfully", { accessToken }));
 });
 const logout = asyncHandler(async (req: Request, res: Response) => {
-  const RefreshedToken = await RefreshingTokens(req.user?.email, "", "");
+  const RefreshedToken = await RefreshingTokens(req.user?.email, "");
   if (!RefreshedToken) {
     throw new ApiError(500, "Internal server error refreshing tokens");
   }
 
   return res
     .status(200)
-    .clearCookie("accessToken")
     .clearCookie("refreshToken")
-    .json({ message: "User logged out successfully" });
+    .json(new ApiResponse(200, "User logged out successfully", {}));
 });
 
-export { signup, signin, logout };
+const sendToken = asyncHandler(async (req: Request, res: Response) => {
+  const Token = req.cookies.refreshToken;
+  if (!Token) {
+    return res.status(401).json({ message: "Unauthorized no token exist" });
+  }
+  const decodedToken = await verifyToken(
+    Token,
+    process.env.REFRESH_TOKEN_SECRET || ""
+  );
+  if (!decodedToken || typeof decodedToken === "string") {
+    return res.status(401).json({ message: "Unauthorized invalid token" });
+  }
+  const userLoggedIn = await findUserById(decodedToken?.id);
+  if (!userLoggedIn || userLoggedIn.refreshToken !== Token) {
+    return res
+      .status(401)
+      .clearCookie("refreshToken")
+      .json({ message: "Unauthorized user not logged in" });
+  }
+
+  const accessToken = await generateToken(
+    { id: userLoggedIn?.id },
+    process.env.ACCESS_TOKEN_SECRET,
+    process.env.ACCESS_TOKEN_EXPIRY
+  );
+  res
+    .status(200)
+    .json(
+      new ApiResponse(200, "creating access token was successful", {
+        accessToken,
+      })
+    );
+});
+export { signup, signin, logout, sendToken };
