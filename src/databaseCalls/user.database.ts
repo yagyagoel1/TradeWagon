@@ -111,10 +111,10 @@ export const updateOtp = async (email: string, code: string) => {
   return await prisma.otp.update({
     where: {
       userEmail: email,
-      createdAt: new Date(),
     },
     data: {
       code,
+      createdAt: new Date(),
     },
     select: {
       id: true,

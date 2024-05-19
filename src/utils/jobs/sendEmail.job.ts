@@ -24,11 +24,8 @@ export const emailQueue = new Queue(emailQueueName, {
 export const handler = new Worker(
   emailQueueName,
   async (job: Job) => {
-    // create otp
-    //hash otp
-    //store otp in db
-    //send otp to user
     const otp = await HandlingOtp(job.data);
+    job.updateProgress(40);
     const mailOptions = {
       from: {
         name: "Product Seller",
@@ -38,13 +35,10 @@ export const handler = new Worker(
       subject: "OTP for email verification",
       html: otpMailTemplate(job.data.fullName, otp.toString()),
     };
-    transporter.sendMail(mailOptions, function (error, info) {
-      if (error) {
-        throw new Error(error.message);
-      } else {
-        console.log("Email sent: " + info.response);
-      }
-    });
+    job.updateProgress(50);
+    const info = await transporter.sendMail(mailOptions);
+    console.log(`Message sent: ${info.messageId}`);
+    job.updateProgress(100);
   },
   { connection: redisConnection }
 );

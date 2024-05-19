@@ -144,7 +144,7 @@ const sendToken = asyncHandler(async (req: Request, res: Response) => {
   );
 });
 
-const verifyUser = asyncHandler(async (req: Request, res: Response) => {
+const verifyOtp = asyncHandler(async (req: Request, res: Response) => {
   const { otp, email } = req.body;
   const validate = await validateVerifyUser({ otp, email });
   if (!validate.success) {
@@ -162,7 +162,7 @@ const verifyUser = asyncHandler(async (req: Request, res: Response) => {
   if (!otpSchema) {
     return res.status(400).json(new ApiError(400, "Invalid email"));
   }
-  if (otpSchema.createdAt.getTime() + 600000 > Date.now()) {
+  if (otpSchema.createdAt.getTime() + 600000 < Date.now()) {
     return res.status(400).json(new ApiError(400, "OTP expired"));
   }
   const hashresult = await compareHash(otp, otpSchema.code);
@@ -190,4 +190,4 @@ const resendOtp = asyncHandler(async (req: Request, res: Response) => {
     .status(200)
     .json(new ApiResponse(200, "OTP sent successfully", {}));
 });
-export { signup, signin, logout, sendToken, verifyUser, resendOtp };
+export { signup, signin, logout, sendToken, verifyOtp, resendOtp };

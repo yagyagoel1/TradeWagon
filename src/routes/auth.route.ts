@@ -5,14 +5,15 @@ import {
   sendToken,
   signin,
   signup,
+  verifyOtp,
 } from "../controllers/auth.controller";
 import { verifyUser } from "../middlewares/auth.middleware";
 const router = Router();
 
 router.route("/signup").post(signup);
 router.route("/signin").post(signin);
-router.route("/getAccessToken").get(sendToken);
+router.route("/getaccesstoken").get(sendToken);
 router.route("/logout").post(verifyUser, logout);
-router.route("/verifyOtp").get(verifyUser);
-router.route("/resendOtp").get(resendOtp);
+router.route("/verifyotp").post(verifyOtp);
+router.route("/resendotp").get(resendOtp);
 export default router;
