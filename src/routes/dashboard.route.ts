@@ -10,8 +10,8 @@ const router = Router();
 
 router
   .route("/updateprofilepicture")
-  .patch(upload.single("avatar"), putProfilePicture);
-router.route("/getprofilepicture").get(getProfileImage);
+  .patch(verifyUser, upload.single("avatar"), putProfilePicture);
+router.route("/getprofilepicture").get(verifyUser, getProfileImage);
 router.route("/me").get(verifyUser);
 router.route("/changepassword").patch(verifyUser);
 router.route("/me").put(verifyUser);
