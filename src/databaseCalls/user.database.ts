@@ -121,6 +121,19 @@ export const updateOtp = async (email: string, code: string) => {
     },
   });
 };
+export const toogleUserAvatar = async (email: string, avatar: boolean) => {
+  return await prisma.user.update({
+    where: {
+      email,
+    },
+    data: {
+      avatar: avatar,
+    },
+    select: {
+      id: true,
+    },
+  });
+};
 export const updateUserVerified = async (email: string) => {
   return await prisma.user.update({
     where: {

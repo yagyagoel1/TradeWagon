@@ -38,7 +38,7 @@ app.get(
 );
 
 import authRouter from "./routes/auth.route";
-
+import dashboardRouter from "./routes/dashboard.route";
 app.use("/api/v1/auth", authRouter);
-
+app.use("/api/v1/dashboard", dashboardRouter);
 export default app;
