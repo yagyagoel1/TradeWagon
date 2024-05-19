@@ -18,7 +18,7 @@ model User {
   email           String        @unique
   fullName        String
   password        String
-  avatar          String?
+  avatar          Boolean       @default(false)
   role            Role          @default(USER)
   cart            Cart?
   orders          Order[]
@@ -48,7 +48,7 @@ model Product {
   name          String
   description   String
   price         Float
-  image         String
+  image         Boolean     @default(false)
   reviews       Review[]
   rating        Float       @default(0)
   purchaseCount Int         @default(0)
