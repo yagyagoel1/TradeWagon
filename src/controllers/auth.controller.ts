@@ -7,6 +7,7 @@ import {
   updateUserVerified,
 } from "../databaseCalls/user.database";
 import {
+  validateResendOtp,
   validateSignin,
   validateSignup,
   validateVerifyUser,
@@ -169,4 +170,17 @@ const verifyUser = asyncHandler(async (req: Request, res: Response) => {
     .status(200)
     .json(new ApiResponse(200, "User verified successfully", {}));
 });
-export { signup, signin, logout, sendToken, verifyUser };
+const resendOtp = asyncHandler(async (req: Request, res: Response) => {
+  const { email, fullName } = req.body;
+  const validate = await validateResendOtp({ email, fullName });
+  if (!validate.success) {
+    return res
+      .status(400)
+      .json(new ApiError(400, "please enter a valid email and fullName"));
+  }
+  await emailQueue.add("send email", { email, fullName });
+  return res
+    .status(200)
+    .json(new ApiResponse(200, "OTP sent successfully", {}));
+});
+export { signup, signin, logout, sendToken, verifyUser, resendOtp };
