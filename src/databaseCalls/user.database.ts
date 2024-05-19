@@ -73,6 +73,31 @@ export const findOTPByEmail = async (email: string) => {
   });
 };
 
+export const createOtp = async (email: string, code: string) => {
+  return await prisma.otp.create({
+    data: {
+      userEmail: email,
+      code,
+    },
+    select: {
+      id: true,
+    },
+  });
+};
+export const updateOtp = async (email: string, code: string) => {
+  return await prisma.otp.update({
+    where: {
+      userEmail: email,
+      createdAt: new Date(),
+    },
+    data: {
+      code,
+    },
+    select: {
+      id: true,
+    },
+  });
+};
 export const updateUserVerified = async (email: string) => {
   return await prisma.user.update({
     where: {
