@@ -9,9 +9,9 @@ export const generateToken = async (
   return token;
 };
 
-export const verifyToken = async (token: string) => {
+export const verifyToken = async (token: string, secret: string) => {
   try {
-    const user = await jwt.verify(token, process.env.ACCESSTOKEN || "secret");
+    const user = await jwt.verify(token, secret || "secret");
     return user;
   } catch (error) {
     return null;

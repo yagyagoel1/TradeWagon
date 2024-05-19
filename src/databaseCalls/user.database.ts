@@ -26,6 +26,7 @@ export const findUserById = async (id: string) => {
       email: true,
       fullName: true,
       accessToken: true,
+      refreshToken: true,
     },
   });
 };
@@ -46,17 +47,12 @@ export const createUser = async (data: {
     },
   });
 };
-export const RefreshingTokens = async (
-  email: string,
-  accessToken: string,
-  refreshToken: string
-) => {
+export const RefreshingTokens = async (email: string, refreshToken: string) => {
   return await prisma.user.update({
     where: {
       email,
     },
     data: {
-      accessToken,
       refreshToken,
     },
     select: {
