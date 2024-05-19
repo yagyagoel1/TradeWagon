@@ -1,10 +1,16 @@
 import {
   RefreshingTokens,
   createUser,
+  findOTPByEmail,
   findUserByEmail,
   findUserById,
+  updateUserVerified,
 } from "../databaseCalls/user.database";
-import { validateSignin, validateSignup } from "../schema/auth.schema";
+import {
+  validateSignin,
+  validateSignup,
+  validateVerifyUser,
+} from "../schema/auth.schema";
 import { ApiError } from "../utils/ApiError";
 import { asyncHandler } from "../utils/AsyncHandler";
 import { Request, Response } from "express";
@@ -123,12 +129,44 @@ const sendToken = asyncHandler(async (req: Request, res: Response) => {
     process.env.ACCESS_TOKEN_SECRET,
     process.env.ACCESS_TOKEN_EXPIRY
   );
-  res
-    .status(200)
-    .json(
-      new ApiResponse(200, "creating access token was successful", {
-        accessToken,
-      })
-    );
+  res.status(200).json(
+    new ApiResponse(200, "creating access token was successful", {
+      accessToken,
+    })
+  );
 });
-export { signup, signin, logout, sendToken };
+
+const verifyUser = asyncHandler(async (req: Request, res: Response) => {
+  const { otp, email } = req.body;
+  const validate = await validateVerifyUser({ otp, email });
+  if (!validate.success) {
+    return res
+      .status(400)
+      .json(
+        new ApiError(
+          400,
+          "please enter a valid email and otp" +
+            validate.error.errors[0].message
+        )
+      );
+  }
+  const otpSchema = await findOTPByEmail(email);
+  if (!otpSchema) {
+    return res.status(400).json(new ApiError(400, "Invalid email"));
+  }
+  if (otpSchema.createdAt.getTime() + 600000 > Date.now()) {
+    return res.status(400).json(new ApiError(400, "OTP expired"));
+  }
+  const hashresult = await compareHash(otp, otpSchema.code);
+  if (!hashresult) {
+    return res.status(400).json(new ApiError(400, "Invalid OTP"));
+  }
+  const user = await updateUserVerified(email);
+  if (!user) {
+    return res.status(500).json(new ApiError(500, "error updating user"));
+  }
+  return res
+    .status(200)
+    .json(new ApiResponse(200, "User verified successfully", {}));
+});
+export { signup, signin, logout, sendToken, verifyUser };

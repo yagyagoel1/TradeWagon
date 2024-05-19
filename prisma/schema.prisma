@@ -25,9 +25,8 @@ model User {
   transaction     Transaction[]
   address         Address[]
   review          Review[]
-  otp             OTP?
+  otp             Otp?
   refreshToken    String?
-  accessToken     String?
   isEmailVerified Boolean       @default(false)
   createdAt       DateTime      @default(now())
   updatedAt       DateTime      @updatedAt
@@ -107,13 +106,12 @@ model Address {
   ownerEmail String
 }
 
-model OTP {
+model Otp {
   id        String   @id @default(uuid())
   code      String
   user      User     @relation(fields: [userEmail], references: [email])
   userEmail String   @unique
   createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
 }
 
 enum Rating {

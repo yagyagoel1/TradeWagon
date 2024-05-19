@@ -18,4 +18,11 @@ const validateSignin = (data: { email: string; password: string }) => {
   });
   return schema.safeParse(data);
 };
-export { validateSignup, validateSignin };
+const validateVerifyUser = (data: { email: string; otp: string }) => {
+  const schema = zod.object({
+    email: zod.string().email(),
+    otp: zod.string().length(6),
+  });
+  return schema.safeParse(data);
+};
+export { validateSignup, validateSignin, validateVerifyUser };

@@ -12,4 +12,5 @@ router.route("/signup").post(signup);
 router.route("/signin").post(signin);
 router.route("/getAccessToken").get(sendToken);
 router.route("/logout").post(verifyUser, logout);
+router.route("/verifyOtp").get(verifyUser);
 export default router;

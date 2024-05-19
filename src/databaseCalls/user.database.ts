@@ -25,7 +25,6 @@ export const findUserById = async (id: string) => {
       id: true,
       email: true,
       fullName: true,
-      accessToken: true,
       refreshToken: true,
     },
   });
@@ -54,6 +53,33 @@ export const RefreshingTokens = async (email: string, refreshToken: string) => {
     },
     data: {
       refreshToken,
+    },
+    select: {
+      id: true,
+    },
+  });
+};
+export const findOTPByEmail = async (email: string) => {
+  return await prisma.otp.findFirst({
+    where: {
+      userEmail: email,
+    },
+    select: {
+      id: true,
+      userEmail: true,
+      code: true,
+      createdAt: true,
+    },
+  });
+};
+
+export const updateUserVerified = async (email: string) => {
+  return await prisma.user.update({
+    where: {
+      email,
+    },
+    data: {
+      isEmailVerified: true,
     },
     select: {
       id: true,
