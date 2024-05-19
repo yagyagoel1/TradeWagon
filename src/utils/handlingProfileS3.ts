@@ -1,8 +1,10 @@
 import {
   GetObjectCommand,
+  GetObjectCommandOutput,
   PutObjectCommand,
   S3Client,
 } from "@aws-sdk/client-s3";
+import { Readable } from "stream";
 import sharp from "sharp";
 
 const s3Client = new S3Client({
@@ -33,17 +35,17 @@ export const profileImageUploadS3 = async (
   }
 };
 
-export const getProfileImageS3 = async (email: string) => {
+export const getProfileImageS3 = async (email: string): Promise<Readable> => {
   try {
     const image = await s3Client.send(
       new GetObjectCommand({
         Bucket: process.env.AWS_BUCKET_NAME || "",
-        Key: `profileImages/${email}`,
+        Key: `profileImages/${email}/index.jpeg`,
       })
     );
-    return image;
-  } catch (error) {
+    return image.Body as Readable; // Return the image stream
+  } catch (error: any) {
     console.error("Error getting file", error);
-    return error;
+    throw error;
   }
 };
