@@ -4,6 +4,7 @@ import {
   findOTPByEmail,
   findUserByEmail,
   findUserById,
+  updateUnverifiedUser,
   updateUserVerified,
 } from "../databaseCalls/user.database";
 import {
@@ -29,16 +30,21 @@ const signup = asyncHandler(async (req: Request, res: Response) => {
       .json(new ApiError(400, validation.error.errors[0].message));
   }
   const userFind = await findUserByEmail(email);
-  if (userFind) {
+  if (!userFind) {
+    const createdUser = await createUser({ email, password, fullName });
+  } else if (userFind?.isEmailVerified) {
     return res.status(400).json(new ApiError(400, "User already exists"));
-  }
-  const createdUser = await createUser({ email, password, fullName });
-  if (createdUser) {
-    await emailQueue.add("send email", { email, fullName });
-    return res.status(201).json({
-      message: "User created successfully please verify your email address",
+  } else if (!userFind?.isEmailVerified) {
+    const updatedUser = await updateUnverifiedUser({
+      email,
+      password,
+      fullName,
     });
   }
+  await emailQueue.add("send email", { email, fullName });
+  return res.status(201).json({
+    message: "User created successfully please verify your email address",
+  });
 });
 const signin = asyncHandler(async (req: Request, res: Response) => {
   const { email, password } = req.body;
@@ -56,9 +62,10 @@ const signin = asyncHandler(async (req: Request, res: Response) => {
   }
   const userExists = await findUserByEmail(email);
   if (!userExists) {
-    return res
-      .status(400)
-      .json(new ApiError(400, "User does not exist or is not verified"));
+    return res.status(400).json(new ApiError(400, "User does not exist "));
+  }
+  if (!userExists?.isEmailVerified) {
+    res.status(400).json(new ApiError(400, "User not verified"));
   }
   const passwordMatch = await compareHash(password, userExists?.password);
   if (!passwordMatch) {

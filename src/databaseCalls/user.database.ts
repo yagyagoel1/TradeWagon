@@ -5,13 +5,36 @@ export const findUserByEmail = async (email: string) => {
   return await prisma.user.findFirst({
     where: {
       email,
-      isEmailVerified: true,
     },
     select: {
       id: true,
       email: true,
       password: true,
       fullName: true,
+      isEmailVerified: true,
+    },
+  });
+};
+export const updateUnverifiedUser = async (data: {
+  email: string;
+  password: string;
+  fullName: string;
+}) => {
+  const hashedPassword = await hashData(data.password);
+  return await prisma.user.update({
+    where: {
+      email: data.email,
+    },
+    data: {
+      password: hashedPassword,
+      fullName: data.fullName,
+    },
+    select: {
+      id: true,
+      email: true,
+      password: true,
+      fullName: true,
+      isEmailVerified: true,
     },
   });
 };
