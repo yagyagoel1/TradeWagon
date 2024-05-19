@@ -17,3 +17,13 @@ export const putProfilePicture = asyncHandler(
     res.status(200).json(new ApiResponse(200, "Image uploaded successfully"));
   }
 );
+export const getProfileImage = asyncHandler(
+  async (req: Request, res: Response) => {
+    const image = await getProfileImageS3(req.user?.email);
+    res.setHeader("Content-Type", "image/jpeg");
+    res.setHeader("Content-Disposition", `inline; filename="index.jpeg"`);
+
+    // Pipe the image stream directly to the response
+    image.pipe(res); //
+  }
+);
