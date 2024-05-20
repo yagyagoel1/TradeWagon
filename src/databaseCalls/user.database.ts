@@ -1,4 +1,5 @@
 import { prisma } from "../db";
+import { asyncHandler } from "../utils/AsyncHandler";
 import { hashData } from "../utils/hashing";
 
 export const findUserByEmail = async (email: string) => {
@@ -171,6 +172,28 @@ export const updatePassword = async (id: string, password: string) => {
     },
     select: {
       id: true,
+    },
+  });
+};
+
+export const getUserProfileMe = async (id: string) => {
+  return await prisma.user.findFirst({
+    where: {
+      id,
+    },
+    select: {
+      email: true,
+      fullName: true,
+      createdAt: true,
+      address: {
+        select: {
+          street: true,
+          city: true,
+          state: true,
+          country: true,
+          postalCode: true,
+        },
+      },
     },
   });
 };
