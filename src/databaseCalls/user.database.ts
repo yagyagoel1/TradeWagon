@@ -48,6 +48,7 @@ export const findUserById = async (id: string) => {
       id: true,
       email: true,
       fullName: true,
+      createdAt: true,
       refreshToken: true,
     },
   });
@@ -141,6 +142,17 @@ export const updateUserVerified = async (email: string) => {
     },
     data: {
       isEmailVerified: true,
+    },
+    select: {
+      id: true,
+    },
+  });
+};
+export const UserProfileImageExists = async (email: string) => {
+  return await prisma.user.findFirst({
+    where: {
+      email,
+      avatar: true,
     },
     select: {
       id: true,

@@ -1,6 +1,5 @@
 import {
   GetObjectCommand,
-  GetObjectCommandOutput,
   PutObjectCommand,
   S3Client,
 } from "@aws-sdk/client-s3";
