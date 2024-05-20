@@ -197,3 +197,16 @@ export const getUserProfileMe = async (id: string) => {
     },
   });
 };
+export const changeUserProfileMe = async (id: string, fullName: string) => {
+  return await prisma.user.update({
+    where: {
+      id,
+    },
+    data: {
+      fullName,
+    },
+    select: {
+      id: true,
+    },
+  });
+};
