@@ -7,7 +7,9 @@ import {
 import { ApiResponse } from "../utils/ApiResponse";
 import {
   UserProfileImageExists,
+  addNewAddress,
   changeUserProfileMe,
+  findUserAddress,
   findUserByEmail,
   findUserById,
   getUserProfileMe,
@@ -16,6 +18,10 @@ import {
 } from "../databaseCalls/user.database";
 import { ApiError } from "../utils/ApiError";
 import { compareHash } from "../utils/hashing";
+import {
+  addUserAddressSchema,
+  changeUsesrProfileSchema,
+} from "../schema/dashboard.schema";
 
 const putProfilePicture = asyncHandler(async (req: Request, res: Response) => {
   if (!req.file) {
@@ -63,16 +69,58 @@ const changePassword = asyncHandler(async (req: Request, res: Response) => {
 
 const changeUserProfile = asyncHandler(async (req: Request, res: Response) => {
   const { fullName } = req.body;
+  const validate = await changeUsesrProfileSchema(fullName);
+  if (!validate.success) {
+    return res
+      .status(400)
+      .json(new ApiError(400, validate.error.errors[0].message));
+  }
   const user = await changeUserProfileMe(req.user?.id, fullName);
   res
     .status(200)
     .json(new ApiResponse(200, "User profile updated successfully"));
 });
 
+const addUserAddress = asyncHandler(async (req: Request, res: Response) => {
+  const { street, city, state, country, postalCode } = req.body;
+  const validate = await addUserAddressSchema({
+    street,
+    city,
+    state,
+    country,
+    postalCode,
+  });
+  if (!validate.success) {
+    return res
+      .status(400)
+      .json(new ApiError(400, validate.error.errors[0].message));
+  }
+  const checkAddress = await findUserAddress(req.user?.email);
+  if (checkAddress) {
+    await addNewAddress(req.user?.email, {
+      street,
+      city,
+      state,
+      country,
+      postalCode,
+    });
+  } else {
+    await addNewAddress(req.user?.email, {
+      street,
+      city,
+      state,
+      country,
+      postalCode,
+      primary: true,
+    });
+  }
+  res.status(200).json(new ApiResponse(200, "Address added successfully"));
+});
 export {
   changePassword,
   changeUserProfile,
   getUserProfile,
   getProfileImage,
   putProfilePicture,
+  addUserAddress,
 };

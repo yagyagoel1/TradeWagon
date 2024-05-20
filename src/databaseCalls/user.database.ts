@@ -187,6 +187,7 @@ export const getUserProfileMe = async (id: string) => {
       createdAt: true,
       address: {
         select: {
+          id: true,
           street: true,
           city: true,
           state: true,
@@ -207,6 +208,52 @@ export const changeUserProfileMe = async (id: string, fullName: string) => {
     },
     select: {
       id: true,
+    },
+  });
+};
+
+export const findUserAddress = async (email: string) => {
+  return await prisma.user.findFirst({
+    where: {
+      email,
+    },
+    select: {
+      address: {
+        select: {
+          street: true,
+          city: true,
+          state: true,
+          country: true,
+          postalCode: true,
+        },
+      },
+    },
+  });
+};
+export const addNewAddress = async (
+  email: string,
+  data: {
+    street: string;
+    city: string;
+    state: string;
+    country: string;
+    postalCode: string;
+    primary?: boolean;
+  }
+) => {
+  return await prisma.address.create({
+    data: {
+      street: data.street,
+      city: data.city,
+      state: data.state,
+      country: data.country,
+      postalCode: data.postalCode,
+      ownerEmail: email,
+      primary: data.primary,
+    },
+    select: {
+      id: true,
+      primary: true,
     },
   });
 };
