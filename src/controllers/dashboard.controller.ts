@@ -9,6 +9,8 @@ import {
   UserProfileImageExists,
   addNewAddress,
   changeUserProfileMe,
+  deleteUserAddress,
+  findAddressByEmail,
   findUserAddress,
   findUserByEmail,
   findUserById,
@@ -95,27 +97,26 @@ const addUserAddress = asyncHandler(async (req: Request, res: Response) => {
       .status(400)
       .json(new ApiError(400, validate.error.errors[0].message));
   }
-  const checkAddress = await findUserAddress(req.user?.email);
-  if (checkAddress) {
-    await addNewAddress(req.user?.email, {
-      street,
-      city,
-      state,
-      country,
-      postalCode,
-    });
-  } else {
-    await addNewAddress(req.user?.email, {
-      street,
-      city,
-      state,
-      country,
-      postalCode,
-      primary: true,
-    });
-  }
+
+  await addNewAddress(req.user?.email, {
+    street,
+    city,
+    state,
+    country,
+    postalCode,
+  });
+
   res.status(200).json(new ApiResponse(200, "Address added successfully"));
 });
+const removeaddress = asyncHandler(async (req: Request, res: Response) => {
+  const userAddress = await findAddressByEmail(req.user?.email);
+  if (!userAddress) {
+    return res.status(404).json(new ApiError(404, "User not found"));
+  }
+  const address = await deleteUserAddress(userAddress?.id);
+  res.status(200).json(new ApiResponse(200, "Address removed successfully"));
+});
+
 export {
   changePassword,
   changeUserProfile,

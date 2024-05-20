@@ -238,7 +238,6 @@ export const addNewAddress = async (
     state: string;
     country: string;
     postalCode: string;
-    primary?: boolean;
   }
 ) => {
   return await prisma.address.create({
@@ -249,11 +248,34 @@ export const addNewAddress = async (
       country: data.country,
       postalCode: data.postalCode,
       ownerEmail: email,
-      primary: data.primary,
     },
     select: {
       id: true,
-      primary: true,
+    },
+  });
+};
+export const deleteUserAddress = async (id: string) => {
+  return await prisma.address.delete({
+    where: {
+      id,
+    },
+    select: {
+      id: true,
+    },
+  });
+};
+export const findAddressByEmail = async (email: string) => {
+  return await prisma.address.findFirst({
+    where: {
+      ownerEmail: email,
+    },
+    select: {
+      id: true,
+      street: true,
+      city: true,
+      state: true,
+      country: true,
+      postalCode: true,
     },
   });
 };
