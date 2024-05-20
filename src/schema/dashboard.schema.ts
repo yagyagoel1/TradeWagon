@@ -21,3 +21,20 @@ export const addUserAddressSchema = async (data: {
   });
   return schema.safeParse(data);
 };
+
+export const updateUserAddressSchema = async (data: {
+  street?: string;
+  city?: string;
+  state?: string;
+  country?: string;
+  postalCode?: string;
+}) => {
+  const schema = z.object({
+    street: z.string().min(3).optional(),
+    city: z.string().min(3).optional(),
+    state: z.string().min(3).optional(),
+    country: z.string().min(3).optional(),
+    postalCode: z.string().length(6).optional(),
+  });
+  return schema.safeParse(data);
+};

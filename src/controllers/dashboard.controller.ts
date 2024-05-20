@@ -23,6 +23,7 @@ import { compareHash } from "../utils/hashing";
 import {
   addUserAddressSchema,
   changeUsesrProfileSchema,
+  updateUserAddressSchema,
 } from "../schema/dashboard.schema";
 
 const putProfilePicture = asyncHandler(async (req: Request, res: Response) => {
@@ -108,15 +109,31 @@ const addUserAddress = asyncHandler(async (req: Request, res: Response) => {
 
   res.status(200).json(new ApiResponse(200, "Address added successfully"));
 });
-const removeaddress = asyncHandler(async (req: Request, res: Response) => {
+const removeUserAddress = asyncHandler(async (req: Request, res: Response) => {
   const userAddress = await findAddressByEmail(req.user?.email);
   if (!userAddress) {
     return res.status(404).json(new ApiError(404, "User not found"));
   }
-  const address = await deleteUserAddress(userAddress?.id);
+  const address = await deleteUserAddress(req.user?.email);
   res.status(200).json(new ApiResponse(200, "Address removed successfully"));
 });
 
+const updateUserAddress = asyncHandler(async (req: Request, res: Response) => {
+  const data = req.body;
+  const validate = await updateUserAddressSchema(data);
+  if (!validate.success) {
+    return res
+      .status(400)
+      .json(new ApiError(400, validate.error.errors[0].message));
+  }
+
+  const userAddress = await findAddressByEmail(req.user?.email);
+  if (!userAddress) {
+    return res.status(404).json(new ApiError(404, "User not found"));
+  }
+  const address = await updateUserAddress(req.user?.email, data);
+  res.status(200).json(new ApiResponse(200, "Address updated successfully"));
+});
 export {
   changePassword,
   changeUserProfile,
@@ -124,4 +141,6 @@ export {
   getProfileImage,
   putProfilePicture,
   addUserAddress,
+  removeUserAddress,
+  updateUserAddress,
 };
