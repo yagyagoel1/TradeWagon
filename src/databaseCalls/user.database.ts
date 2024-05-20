@@ -159,3 +159,18 @@ export const UserProfileImageExists = async (email: string) => {
     },
   });
 };
+
+export const updatePassword = async (id: string, password: string) => {
+  const hashedPassword = await hashData(password);
+  return await prisma.user.update({
+    where: {
+      id,
+    },
+    data: {
+      password: hashedPassword,
+    },
+    select: {
+      id: true,
+    },
+  });
+};

@@ -7,14 +7,18 @@ import {
 import { ApiResponse } from "../utils/ApiResponse";
 import {
   UserProfileImageExists,
+  findUserByEmail,
   findUserById,
   toogleUserAvatar,
+  updatePassword,
 } from "../databaseCalls/user.database";
+import { ApiError } from "../utils/ApiError";
+import { compareHash } from "../utils/hashing";
 
 export const putProfilePicture = asyncHandler(
   async (req: Request, res: Response) => {
     if (!req.file) {
-      res.status(400).json(new ApiResponse(400, "No file uploaded"));
+      res.status(400).json(new ApiError(400, "No file uploaded"));
     }
     await profileImageUploadS3(req.file, req.user?.email);
     await toogleUserAvatar(req.user?.email, true);
@@ -25,7 +29,7 @@ export const getProfileImage = asyncHandler(
   async (req: Request, res: Response) => {
     const imageExists = await UserProfileImageExists(req.user?.email);
     if (!imageExists) {
-      return res.status(404).json(new ApiResponse(404, "No image found"));
+      return res.status(404).json(new ApiError(404, "No image found"));
     }
     const image = await getProfileImageS3(req.user?.email);
     res.setHeader("Content-Type", "image/jpeg");
@@ -40,7 +44,7 @@ export const getUserProfile = asyncHandler(
   async (req: Request, res: Response) => {
     const userProfile = await findUserById(req.user?.id);
     if (!userProfile) {
-      return res.status(404).json(new ApiResponse(404, "No user found"));
+      return res.status(404).json(new ApiError(404, "No user found"));
     }
 
     res.status(200).json(
@@ -50,5 +54,23 @@ export const getUserProfile = asyncHandler(
         Joined: userProfile.createdAt.toDateString(),
       })
     );
+  }
+);
+
+export const changePassword = asyncHandler(
+  async (req: Request, res: Response) => {
+    const { oldPassword, newPassword } = req.body;
+    const user = await findUserByEmail(req.user?.id);
+    if (!user) {
+      return res.status(404).json(new ApiError(404, "User not found"));
+    }
+    const passwordMatch = await compareHash(oldPassword, user.password);
+    if (!passwordMatch) {
+      return res
+        .status(400)
+        .json(new ApiError(400, "Old password is incorrect"));
+    }
+    const changedPassword = await updatePassword(user.id, newPassword);
+    res.status(200).json(new ApiResponse(200, "Password changed successfully"));
   }
 );
