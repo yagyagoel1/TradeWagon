@@ -7,7 +7,8 @@ import {
   getProfileImage,
   getUserProfile,
   putProfilePicture,
-  removeAddress,
+  removeUserAddress,
+  updateUserAddress,
 } from "../controllers/dashboard.controller";
 import { upload } from "../middlewares/multer.middleware";
 
@@ -21,6 +22,6 @@ router.route("/me").get(verifyUser, getUserProfile);
 router.route("/changepassword").patch(verifyUser, changePassword);
 router.route("/me").patch(verifyUser, changeUserProfile);
 router.route("/addaddress").post(verifyUser, addUserAddress);
-router.route("/removeaddress").delete(verifyUser, removeAddress);
-
+router.route("/removeaddress").delete(verifyUser, removeUserAddress);
+router.route("/updateaddress").patch(verifyUser, updateUserAddress);
 export default router;
