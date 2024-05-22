@@ -48,7 +48,7 @@ model Product {
   name          String
   description   String
   price         Float
-  image         Boolean     @default(false)
+  image         String
   reviews       Review[]
   rating        Float       @default(0)
   purchaseCount Int         @default(0)
