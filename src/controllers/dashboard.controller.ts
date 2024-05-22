@@ -17,6 +17,7 @@ import {
   getUserProfileMe,
   toogleUserAvatar,
   updatePassword,
+  updateUserAddressByEmail,
 } from "../databaseCalls/user.database";
 import { ApiError } from "../utils/ApiError";
 import { compareHash } from "../utils/hashing";
@@ -131,7 +132,7 @@ const updateUserAddress = asyncHandler(async (req: Request, res: Response) => {
   if (!userAddress) {
     return res.status(404).json(new ApiError(404, "User not found"));
   }
-  const address = await updateUserAddress(req.user?.email, data);
+  const address = await updateUserAddressByEmail(req.user?.email, data);
   res.status(200).json(new ApiResponse(200, "Address updated successfully"));
 });
 export {

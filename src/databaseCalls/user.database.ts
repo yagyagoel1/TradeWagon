@@ -279,7 +279,7 @@ export const findAddressByEmail = async (email: string) => {
     },
   });
 };
-const updateUserAddress = async (
+export const updateUserAddressByEmail = async (
   email: string,
   data: {
     street?: string;
