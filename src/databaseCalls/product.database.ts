@@ -1,3 +1,4 @@
+import { ProductType } from "@prisma/client";
 import { prisma } from "../db";
 
 export const getAllProducts = async (page: number) => {
@@ -35,4 +36,22 @@ export const getProductById = async (id: string) => {
     },
   });
   return product;
+};
+
+export const addProducts = async (data: {
+  name: string;
+  price: number;
+  description: string;
+  image: string;
+  productType: ProductType;
+}) => {
+  return await prisma.product.create({
+    data: {
+      name: data.name,
+      price: data.price,
+      description: data.description,
+      image: data.image,
+      productType: ProductType[data.productType],
+    },
+  });
 };
