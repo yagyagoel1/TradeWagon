@@ -44,28 +44,39 @@ model Review {
 }
 
 model Product {
-  id            String      @id @default(uuid())
+  id            String        @id @default(uuid())
   name          String
   description   String
   price         Float
   image         String
   reviews       Review[]
-  rating        Float       @default(0)
-  purchaseCount Int         @default(0)
+  rating        Float         @default(0)
+  purchaseCount Int           @default(0)
   productType   ProductType
-  cart          Cart[]
+  cart          CartProduct[]
   order         Order[]
-  createdAt     DateTime    @default(now())
-  updatedAt     DateTime    @updatedAt
+  createdAt     DateTime      @default(now())
+  updatedAt     DateTime      @updatedAt
 }
 
 model Cart {
-  id         String    @id @default(uuid())
-  items      Product[]
-  owner      User      @relation(fields: [ownerEmail], references: [email])
-  ownerEmail String    @unique
-  createdAt  DateTime  @default(now())
-  updatedAt  DateTime  @updatedAt
+  id         String        @id @default(uuid())
+  items      CartProduct[]
+  owner      User          @relation(fields: [ownerEmail], references: [email])
+  ownerEmail String        @unique
+  createdAt  DateTime      @default(now())
+  updatedAt  DateTime      @updatedAt
+}
+
+model CartProduct {
+  id        String   @id @default(uuid())
+  cart      Cart     @relation(fields: [cartId], references: [id])
+  cartId    String
+  product   Product  @relation(fields: [productId], references: [id])
+  productId String
+  quantity  Int      @default(1)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 }
 
 model Order {
