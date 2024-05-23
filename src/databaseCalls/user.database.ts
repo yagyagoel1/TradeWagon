@@ -51,6 +51,7 @@ export const findUserById = async (id: string) => {
       fullName: true,
       createdAt: true,
       refreshToken: true,
+      role: true,
     },
   });
 };
