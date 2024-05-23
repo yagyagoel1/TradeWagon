@@ -96,5 +96,24 @@ const deleteProduct = asyncHandler(async (req: Request, res: Response) => {
     .status(200)
     .json(new ApiResponse(200, "Product deleted successfully", {}));
 });
-
+const changeImage = asyncHandler(async (req: Request, res: Response) => {
+  const { id } = req.params;
+  if (!req.file) {
+    return res.status(400).json(new ApiError(400, "Image is required"));
+  }
+  const uploadUrl = await uploadOnCloudinary(
+    req.file?.path,
+    id,
+    `products/${req.user?.email}`
+  );
+  if (!uploadUrl) {
+    return res.status(400).json(new ApiError(400, "Image upload failed"));
+  }
+  const product = await updateProductImage(id, { image: uploadUrl.secure_url });
+  return res.status(200).json(
+    new ApiResponse(200, "Image updated successfully", {
+      uploadUrl: uploadUrl.secure_url,
+    })
+  );
+});
 export { getProducts, getProductId, addProduct, updateProduct, deleteProduct };

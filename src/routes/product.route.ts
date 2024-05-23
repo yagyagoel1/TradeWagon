@@ -21,4 +21,11 @@ router
   .patch(verifyUser([Roles.ADMIN]), updateProduct)
   .delete(verifyUser([Roles.ADMIN]), deleteProduct);
 
+router
+  .route("/changeImage/:id")
+  .patch(
+    verifyUser([Roles.ADMIN]),
+    upload.single("ProductImage"),
+    updateProduct
+  );
 export default router;
