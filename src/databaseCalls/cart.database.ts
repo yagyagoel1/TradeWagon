@@ -84,3 +84,23 @@ export const increaseProductQuantity = async (cartProductId: string) => {
     },
   });
 };
+
+export const deleteProductFromCart = async (cartProductId: string) => {
+  return await prisma.cartProduct.delete({
+    where: {
+      id: cartProductId,
+    },
+  });
+};
+export const decreaseProductQuantity = async (cartProductId: string) => {
+  return await prisma.cartProduct.update({
+    where: {
+      id: cartProductId,
+    },
+    data: {
+      quantity: {
+        decrement: 1,
+      },
+    },
+  });
+};
