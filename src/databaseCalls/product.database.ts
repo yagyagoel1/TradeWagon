@@ -55,3 +55,42 @@ export const addProducts = async (data: {
     },
   });
 };
+
+export const updateProductById = async (
+  id: string,
+  data: { name?: string; price?: number; description?: string }
+) => {
+  return await prisma.product.update({
+    where: {
+      id,
+    },
+    data: {
+      name: data?.name,
+      price: data?.price,
+      description: data?.description,
+    },
+  });
+};
+export const deleteProductById = async (id: string) => {
+  return await prisma.product.delete({
+    where: {
+      id,
+    },
+    select: {
+      id: true,
+    },
+  });
+};
+export const updateProductImage = async (
+  id: string,
+  data: { image: string }
+) => {
+  return await prisma.product.update({
+    where: {
+      id,
+    },
+    data: {
+      image: data.image,
+    },
+  });
+};

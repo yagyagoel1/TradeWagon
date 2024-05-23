@@ -32,3 +32,17 @@ export const addProductSchema = (product: {
   });
   return schema.safeParse(product);
 };
+
+export const updateProductSchema = (product: {
+  name?: string;
+  price?: number;
+  description?: string;
+  productType?: string;
+}) => {
+  const schema = z.object({
+    name: z.string().min(3).max(255).optional(),
+    price: z.number().nonnegative().optional(),
+    description: z.string().min(3).max(255).optional(),
+  });
+  return schema.safeParse(product);
+};

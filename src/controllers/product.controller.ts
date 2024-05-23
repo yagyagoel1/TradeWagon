@@ -1,11 +1,18 @@
 import { Request, Response } from "express";
 import { asyncHandler } from "../utils/AsyncHandler";
-import { addProductSchema, getProductsSchema } from "../schema/product.schema";
+import {
+  addProductSchema,
+  getProductsSchema,
+  updateProductSchema,
+} from "../schema/product.schema";
 import { ApiError } from "../utils/ApiError";
 import {
   addProducts,
+  deleteProductById,
   getAllProducts,
   getProductById,
+  updateProductById,
+  updateProductImage,
 } from "../databaseCalls/product.database";
 import { ApiResponse } from "../utils/ApiResponse";
 import { uploadOnCloudinary } from "../utils/cloudinary";
@@ -68,4 +75,26 @@ const addProduct = asyncHandler(async (req: Request, res: Response) => {
     .status(201)
     .json(new ApiResponse(201, "Product added successfully", product));
 });
-export { getProducts, getProductId, addProduct };
+const updateProduct = asyncHandler(async (req: Request, res: Response) => {
+  const { id } = req.params;
+  const data = req.body;
+  const validate = await updateProductSchema(data);
+  if (!validate.success) {
+    return res
+      .status(400)
+      .json(new ApiError(400, validate.error.errors[0].message));
+  }
+  const product = await updateProductById(id, data);
+  res
+    .status(200)
+    .json(new ApiResponse(200, "Product updated successfully", {}));
+});
+const deleteProduct = asyncHandler(async (req: Request, res: Response) => {
+  const { id } = req.params;
+  const product = await deleteProductById(id);
+  res
+    .status(200)
+    .json(new ApiResponse(200, "Product deleted successfully", {}));
+});
+
+export { getProducts, getProductId, addProduct, updateProduct, deleteProduct };
