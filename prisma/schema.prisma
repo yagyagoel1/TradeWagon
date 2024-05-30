@@ -44,19 +44,20 @@ model Review {
 }
 
 model Product {
-  id            String        @id @default(uuid())
+  id            String         @id @default(uuid())
   name          String
   description   String
   price         Float
   image         String
+  inStock       String
   reviews       Review[]
-  rating        Float         @default(0)
-  purchaseCount Int           @default(0)
+  rating        Float          @default(0)
+  purchaseCount Int            @default(0)
   productType   ProductType
   cart          CartProduct[]
-  order         Order[]
-  createdAt     DateTime      @default(now())
-  updatedAt     DateTime      @updatedAt
+  order         OrderProduct[]
+  createdAt     DateTime       @default(now())
+  updatedAt     DateTime       @updatedAt
 }
 
 model Cart {
@@ -79,9 +80,18 @@ model CartProduct {
   updatedAt DateTime @updatedAt
 }
 
+model OrderProduct {
+  id        String  @id @default(uuid())
+  order     Order   @relation(fields: [orderId], references: [id])
+  orderId   String
+  product   Product @relation(fields: [productId], references: [id])
+  productId String
+  quantity  Int     @default(1)
+}
+
 model Order {
   id             String         @id @default(uuid())
-  items          Product[]
+  items          OrderProduct[]
   owner          User           @relation(fields: [ownerEmail], references: [email])
   ownerEmail     String
   totalPrice     Float
@@ -156,10 +166,7 @@ enum DeliveryStatus {
 }
 
 enum PaymentMethod {
-  CREDIT_CARD
-  DEBIT_CARD
-  NET_BANKING
-  UPI
+  ONLINE
   COD
 }
 
