@@ -98,7 +98,6 @@ model Order {
   transaction    Transaction?
   deliveryStatus DeliveryStatus
   paymentMethod  PaymentMethod
-  paymentStatus  PaymentStatus
   createdAt      DateTime       @default(now())
   updatedAt      DateTime       @updatedAt
 }
@@ -167,12 +166,6 @@ enum DeliveryStatus {
 
 enum PaymentMethod {
   ONLINE
-  COD
-}
-
-enum PaymentStatus {
-  SUCCESS
-  FAILED
   COD
 }
 
