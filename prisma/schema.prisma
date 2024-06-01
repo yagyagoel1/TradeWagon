@@ -49,7 +49,7 @@ model Product {
   description   String
   price         Float
   image         String
-  inStock       String
+  inStock       Int
   reviews       Review[]
   rating        Float          @default(0)
   purchaseCount Int            @default(0)
@@ -98,6 +98,7 @@ model Order {
   transaction    Transaction?
   deliveryStatus DeliveryStatus
   paymentMethod  PaymentMethod
+  paymentSuccess Boolean        @default(false)
   createdAt      DateTime       @default(now())
   updatedAt      DateTime       @updatedAt
 }
