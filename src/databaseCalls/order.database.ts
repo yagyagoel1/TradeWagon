@@ -28,3 +28,24 @@ export const createOrderByEmail = async ({
   });
   return order;
 };
+
+export const getAllOrdersByEmail = async (email: string) => {
+  const orders = await prisma.order.findMany({
+    where: {
+      ownerEmail: email,
+    },
+    select: {
+      items: {
+        include: {
+          product: true,
+        },
+      },
+      id: true,
+      totalPrice: true,
+      deliveryStatus: true,
+      paymentMethod: true,
+      createdAt: true,
+    },
+  });
+  return orders;
+};

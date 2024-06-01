@@ -5,7 +5,10 @@ import { getCartItems } from "../databaseCalls/cart.database";
 import { ApiError } from "../utils/ApiError";
 import { prisma } from "../db";
 import { getProductById } from "../databaseCalls/product.database";
-import { createOrderByEmail } from "../databaseCalls/order.database";
+import {
+  createOrderByEmail,
+  getAllOrdersByEmail,
+} from "../databaseCalls/order.database";
 import { ApiResponse } from "../utils/ApiResponse";
 
 const checkout = asyncHandler(async (req: Request, res: Response) => {
@@ -60,6 +63,8 @@ const checkout = asyncHandler(async (req: Request, res: Response) => {
         )
       );
 
+      if (!(totalCost > 500)) totalCost += 50;
+
       await createOrderByEmail({
         emailId: req.user?.email,
         items: cart.items,
@@ -96,6 +101,7 @@ const checkout = asyncHandler(async (req: Request, res: Response) => {
       });
 
       totalCost = product.price * intQuantity;
+      if (!(totalCost > 500)) totalCost += 50;
       await createOrderByEmail({
         emailId: req.user?.email,
         items: [{ quantity: intQuantity, product }],
@@ -131,5 +137,14 @@ const checkout = asyncHandler(async (req: Request, res: Response) => {
     throw error;
   }
 });
+const getAllOrders = asyncHandler(async (req: Request, res: Response) => {
+  const orders = await getAllOrdersByEmail(req.user?.email);
+  res
+    .status(200)
+    .json(new ApiResponse(200, "Orders retrieved successfully", orders));
+});
 
-export { checkout };
+export {
+  checkout, //create transaction for the quantity
+  getAllOrders,
+};
