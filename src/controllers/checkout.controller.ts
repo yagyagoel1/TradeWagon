@@ -101,13 +101,13 @@ const checkout = asyncHandler(async (req: Request, res: Response) => {
       //create the transaction
     }
   }
-  res
-    .status(200)
-    .json(
-      new ApiResponse(200, "Order created successfully", {
-        paymentMethod,
-        totalCost,
-        paymentdetails: {},
-      })
-    );
+  res.status(200).json(
+    new ApiResponse(200, "Order created successfully", {
+      paymentMethod,
+      totalCost,
+      paymentdetails: {},
+    })
+  );
 });
+
+export { checkout };

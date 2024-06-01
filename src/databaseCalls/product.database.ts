@@ -12,6 +12,7 @@ export const getAllProducts = async (page: number) => {
       price: true,
       description: true,
       image: true,
+      inStock: true,
       productType: true,
       createdAt: true,
       updatedAt: true,
@@ -30,6 +31,7 @@ export const getProductById = async (id: string) => {
       price: true,
       description: true,
       image: true,
+      inStock: true,
       productType: true,
       createdAt: true,
       updatedAt: true,
@@ -44,6 +46,7 @@ export const addProducts = async (data: {
   description: string;
   image: string;
   productType: ProductType;
+  inStock: number;
 }) => {
   return await prisma.product.create({
     data: {
@@ -51,6 +54,7 @@ export const addProducts = async (data: {
       price: data.price,
       description: data.description,
       image: data.image,
+      inStock: data.inStock,
       productType: ProductType[data.productType],
     },
   });

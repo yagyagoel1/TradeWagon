@@ -15,6 +15,7 @@ export const getCartItems = async (userEmail: string) => {
               id: true,
               name: true,
               price: true,
+              inStock: true,
               description: true,
               image: true,
               productType: true,
