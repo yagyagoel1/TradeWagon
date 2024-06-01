@@ -15,3 +15,10 @@ export const checkoutSchema = (data: {
   });
   return schema.safeParse(data);
 };
+
+export const getOrderSchema = (data: { id: string }) => {
+  const schema = z.object({
+    id: z.string(),
+  });
+  return schema.safeParse(data);
+};

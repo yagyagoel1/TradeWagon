@@ -1,5 +1,6 @@
 import { PaymentMethod } from "@prisma/client";
 import { prisma } from "../db";
+import { QuoteFields } from "@aws-sdk/client-s3";
 
 export const createOrderByEmail = async ({
   emailId,
@@ -48,4 +49,25 @@ export const getAllOrdersByEmail = async (email: string) => {
     },
   });
   return orders;
+};
+
+export const getOrderById = async (id: string) => {
+  const order = await prisma.order.findFirst({
+    where: {
+      id,
+    },
+    select: {
+      items: {
+        include: {
+          product: true,
+        },
+      },
+      id: true,
+      totalPrice: true,
+      deliveryStatus: true,
+      paymentMethod: true,
+      createdAt: true,
+    },
+  });
+  return order;
 };

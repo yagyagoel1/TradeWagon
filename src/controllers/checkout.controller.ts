@@ -1,6 +1,6 @@
 import { Request, Response } from "express";
 import { asyncHandler } from "../utils/AsyncHandler";
-import { checkoutSchema } from "../schema/checkout.schema";
+import { checkoutSchema, getOrderSchema } from "../schema/checkout.schema";
 import { getCartItems } from "../databaseCalls/cart.database";
 import { ApiError } from "../utils/ApiError";
 import { prisma } from "../db";
@@ -8,6 +8,7 @@ import { getProductById } from "../databaseCalls/product.database";
 import {
   createOrderByEmail,
   getAllOrdersByEmail,
+  getOrderById,
 } from "../databaseCalls/order.database";
 import { ApiResponse } from "../utils/ApiResponse";
 
@@ -143,8 +144,25 @@ const getAllOrders = asyncHandler(async (req: Request, res: Response) => {
     .status(200)
     .json(new ApiResponse(200, "Orders retrieved successfully", orders));
 });
+const getOrder = asyncHandler(async (req: Request, res: Response) => {
+  const { id } = req.params;
+  const validate = await getOrderSchema({ id });
+  if (!validate.success) {
+    return res
+      .status(400)
+      .json(new ApiError(400, validate.error.errors[0].message));
+  }
+  const order = await getOrderById(id);
+  if (!order) {
+    return res.status(404).json(new ApiError(404, "Order not found"));
+  }
+  res
+    .status(200)
+    .json(new ApiResponse(200, "Order retrieved successfully", order));
+});
 
 export {
   checkout, //create transaction for the quantity
   getAllOrders,
+  getOrder,
 };
