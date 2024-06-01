@@ -17,6 +17,7 @@ export const addProductSchema = (product: {
   description: string;
   image: string;
   productType: string;
+  inStock: number;
 }) => {
   const schema = z.object({
     name: z.string().min(3).max(255),
@@ -29,6 +30,7 @@ export const addProductSchema = (product: {
       ProductType.FOOD,
       ProductType.OTHERS,
     ]),
+    inStock: z.number().nonnegative(),
   });
   return schema.safeParse(product);
 };

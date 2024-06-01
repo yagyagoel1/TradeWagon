@@ -40,13 +40,14 @@ const getProductId = asyncHandler(async (req: Request, res: Response) => {
 });
 
 const addProduct = asyncHandler(async (req: Request, res: Response) => {
-  const { name, price, description, image, productType } = req.body;
+  const { name, price, description, image, productType, inStock } = req.body;
   const validate = await addProductSchema({
     name,
     price,
     description,
     image,
     productType,
+    inStock,
   });
   if (!validate.success) {
     return res
@@ -70,6 +71,7 @@ const addProduct = asyncHandler(async (req: Request, res: Response) => {
     description,
     image: uploadUrl.secure_url,
     productType,
+    inStock,
   });
   res
     .status(201)
