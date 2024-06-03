@@ -3,6 +3,7 @@ import { verifyUser } from "../middlewares/auth.middleware";
 import { Roles } from "../constants";
 import {
   ListAllOrdersForAdmin,
+  cancelOrder,
   updateOrderStatusAdmin,
 } from "../controllers/orderManagment.controller";
 
@@ -12,5 +13,8 @@ router.route("/").get(verifyUser([Roles.ADMIN]), ListAllOrdersForAdmin);
 
 router
   .route("/:orderId")
-  .get(verifyUser([Roles.ADMIN]), updateOrderStatusAdmin);
+  .patch(verifyUser([Roles.ADMIN]), updateOrderStatusAdmin);
+router
+  .route("/cancel/:orderId")
+  .patch(verifyUser([Roles.ADMIN, Roles.USER]), cancelOrder);
 export default router;
