@@ -71,3 +71,25 @@ export const getOrderById = async (id: string) => {
   });
   return order;
 };
+
+export const getAllOrdersForAdmin = async (page: number) => {
+  const skip = (page - 1) * 10;
+  const orders = await prisma.order.findMany({
+    skip: skip,
+    take: 10,
+    select: {
+      items: {
+        include: {
+          product: true,
+        },
+      },
+      id: true,
+      totalPrice: true,
+      deliveryStatus: true,
+      paymentMethod: true,
+      createdAt: true,
+      ownerEmail: true,
+    },
+  });
+  return orders;
+};

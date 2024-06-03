@@ -161,6 +161,8 @@ const getOrder = asyncHandler(async (req: Request, res: Response) => {
     .json(new ApiResponse(200, "Order retrieved successfully", order));
 });
 
+// create recieve payment info from frontend route
+// create webhook for payment
 export {
   checkout, //create transaction for the quantity
   getAllOrders,
