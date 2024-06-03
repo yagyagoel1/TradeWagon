@@ -9,6 +9,7 @@ import {
   createOrderByEmail,
   getAllOrdersByEmail,
   getOrderById,
+  updateOrderStatus,
 } from "../databaseCalls/order.database";
 import { ApiResponse } from "../utils/ApiResponse";
 
@@ -163,8 +164,17 @@ const getOrder = asyncHandler(async (req: Request, res: Response) => {
 
 // create recieve payment info from frontend route
 // create webhook for payment
+const cancelOrder = asyncHandler(async (req: Request, res: Response) => {
+  const { orderId } = req.params;
+  const order = await updateOrderStatus(orderId, "CANCELLED");
+  if (!order) {
+    return res.status(404).json(new ApiError(404, "Order not found"));
+  }
+  res.status(200).json(new ApiResponse(200, "Order cancelled successfully"));
+});
 export {
   checkout, //create transaction for the quantity
   getAllOrders,
   getOrder,
+  cancelOrder,
 };

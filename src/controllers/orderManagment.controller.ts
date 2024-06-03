@@ -35,12 +35,5 @@ const updateOrderStatusAdmin = asyncHandler(
     res.status(200).json(new ApiResponse(200, "Order status updated"));
   }
 );
-const cancelOrder = asyncHandler(async (req: Request, res: Response) => {
-  const { orderId } = req.params;
-  const order = await updateOrderStatus(orderId, "CANCELLED");
-  if (!order) {
-    return res.status(404).json(new ApiError(404, "Order not found"));
-  }
-  res.status(200).json(new ApiResponse(200, "Order cancelled successfully"));
-});
-export { ListAllOrdersForAdmin, updateOrderStatusAdmin, cancelOrder };
+
+export { ListAllOrdersForAdmin, updateOrderStatusAdmin };
