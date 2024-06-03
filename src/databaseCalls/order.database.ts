@@ -1,4 +1,4 @@
-import { PaymentMethod } from "@prisma/client";
+import { DeliveryStatus, PaymentMethod } from "@prisma/client";
 import { prisma } from "../db";
 import { QuoteFields } from "@aws-sdk/client-s3";
 
@@ -92,4 +92,24 @@ export const getAllOrdersForAdmin = async (page: number) => {
     },
   });
   return orders;
+};
+
+export const updateOrderStatus = async (
+  orderId: string,
+  status: DeliveryStatus
+) => {
+  const order = await prisma.order.update({
+    where: {
+      id: orderId,
+    },
+    data: {
+      deliveryStatus: status,
+    },
+    select: {
+      id: true,
+      deliveryStatus: true,
+      ownerEmail: true,
+    },
+  });
+  return order;
 };
