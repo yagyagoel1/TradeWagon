@@ -5,6 +5,7 @@ import productRouter from "./product.route";
 import cartRouter from "./cart.route";
 import checkoutRouter from "./checkout.route";
 import orderManagmentRouter from "./orderManagment.route";
+import analyticsRouter from "./analytics.route";
 const router = Router();
 
 router.use("/auth", authRouter);
@@ -13,4 +14,5 @@ router.use("/products", productRouter);
 router.use("/cart", cartRouter);
 router.use("/orders", checkoutRouter);
 router.use("/orderManagment", orderManagmentRouter);
+router.use("/analytics", analyticsRouter);
 export default router;
