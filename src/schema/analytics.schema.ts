@@ -12,3 +12,10 @@ export const analyticsSchema = async (data:{eventType:EventType ,eventId:string}
 
 }
 
+export const getAnalyticsSchema = async (data:{id:string|undefined,page:number}) => {
+    const schema = z.object({
+        id: z.string().min(10),
+        page: z.number(),
+    })
+    return schema.safeParse(data)
+}

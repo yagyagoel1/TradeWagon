@@ -1,11 +1,10 @@
 import { Request, Response } from "express";
 import { asyncHandler } from "../utils/AsyncHandler";
-import { analyticsSchema } from "../schema/analytics.schema";
+import { analyticsSchema, getAnalyticsSchema } from "../schema/analytics.schema";
 import { ApiError } from "../utils/ApiError";
 import { EventType } from "@prisma/client";
-import { getOrder } from "./checkout.controller";
 import { getOrderById } from "../databaseCalls/order.database";
-import { analyticsProductExists, saveAnalyticsData, updateAnalyticsCount } from "../databaseCalls/analytics.database";
+import { analyticsProductExists, getAnalyticsData, saveAnalyticsData, updateAnalyticsCount } from "../databaseCalls/analytics.database";
 import { ApiResponse } from "../utils/ApiResponse";
 
 const addAnalytics  = asyncHandler(async (req:Request, res:Response) => {
@@ -48,4 +47,17 @@ const addAnalytics  = asyncHandler(async (req:Request, res:Response) => {
    
 });
 
-export {addAnalytics}
+const getAnalytics = asyncHandler(async (req:Request, res:Response) => {
+    const UserId = req.query.id?.toString()||"";
+    const page  = req.query.page?.toString()||"1";
+    const intPage=  parseInt(page);
+    const validate = await getAnalyticsSchema({id:UserId,page:intPage})
+    if(!validate.success){
+        return res.status(400).json(new ApiError(400,validate.error.errors[0].message))
+    }
+    const data = await getAnalyticsData(UserId,intPage)
+    res.status(200).json(new ApiResponse(200,"Analytics data fetched successfully",data))
+});
+
+
+export {addAnalytics,getAnalytics}

@@ -39,3 +39,12 @@ export const analyticsProductExists = async(data:{eventType:EventType ,eventId:s
     }
     })
 }
+export const getAnalyticsData = async(userId:string,page:number)=>{
+    return await prisma.analytics.findMany({
+        where:{
+            userEmail:userId,
+        },
+        take:10,
+        skip:(page-1)*10
+    })
+}
