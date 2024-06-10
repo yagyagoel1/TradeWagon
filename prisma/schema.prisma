@@ -25,6 +25,7 @@ model User {
   transaction     Transaction[]
   address         Address?
   review          Review[]
+  AnalayticsId    Analytics[]
   otp             Otp?
   refreshToken    String?
   isEmailVerified Boolean       @default(false)
@@ -56,6 +57,7 @@ model Product {
   productType   ProductType
   cart          CartProduct[]
   order         OrderProduct[]
+  analyticsItem Analytics[]
   createdAt     DateTime       @default(now())
   updatedAt     DateTime       @updatedAt
 }
@@ -135,6 +137,18 @@ model Otp {
   createdAt DateTime @default(now())
 }
 
+model Analytics {
+  id        String    @id @default(uuid())
+  eventType EventType
+  product   Product   @relation(fields: [productId], references: [id])
+  productId String
+  count     Int       @default(1)
+  user      User      @relation(fields: [userEmail], references: [email])
+  userEmail String
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+}
+
 enum Rating {
   ONE
   TWO
@@ -174,4 +188,11 @@ enum TransactionStatus {
   PENDING
   SUCCESS
   FAILED
+}
+
+enum EventType {
+  VIEW
+  ADD_TO_CART
+  PURCHASE
+  REVIEW
 }
