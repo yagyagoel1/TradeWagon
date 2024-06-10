@@ -6,5 +6,5 @@ import { addAnalytics } from "../controllers/analytics.controller";
 const router = Router();
 
 
-router.route("/add").get(addAnalytics);
+router.route("/add").post(addAnalytics);
 export default router;
