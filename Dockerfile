@@ -19,15 +19,19 @@ FROM node:20-alpine
 
 # Create app directory
 WORKDIR /usr/src/app
+
+# Copy package.json and package-lock.json\
 COPY --from=build /usr/src/app/package*.json ./
 RUN npm install --only=production
+
+# Create a new user
 USER node
 
 # Copy built code from the previous stage
 COPY --from=build  --chown=node:node /usr/src/app/dist ./src
 COPY --from=build --chown=node:node /usr/src/app/node_modules ./node_modules
-
 COPY --from=build /usr/src/app/.env ./
+
 # Expose the port
 EXPOSE 3000
 
