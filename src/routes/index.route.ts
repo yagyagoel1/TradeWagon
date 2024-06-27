@@ -6,6 +6,7 @@ import cartRouter from "./cart.route";
 import checkoutRouter from "./checkout.route";
 import orderManagmentRouter from "./orderManagment.route";
 import analyticsRouter from "./analytics.route";
+import metricsRouter from "./metrics.route";
 const router = Router();
 
 router.use("/auth", authRouter);
@@ -15,4 +16,5 @@ router.use("/cart", cartRouter);
 router.use("/orders", checkoutRouter);
 router.use("/orderManagment", orderManagmentRouter);
 router.use("/analytics", analyticsRouter);
+router.use("/metrics",metricsRouter)
 export default router;
