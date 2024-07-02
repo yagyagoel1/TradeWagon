@@ -35,8 +35,8 @@ Welcome to the Trade Wagon(e.g., Nike, MamaEarth). This platform is designed to 
 1. **Clone the Repository:**
 
     ```bash
-    git clone https://github.com/yourusername/product-selling-platform.git
-    cd product-selling-platform
+    git clone https://github.com/yagyagoel1/tradewagon
+    cd tradewagon
     ```
 
 2. **Set Up Environment Variables:**
@@ -54,8 +54,8 @@ Welcome to the Trade Wagon(e.g., Nike, MamaEarth). This platform is designed to 
 1. **Clone the Repository:**
 
     ```bash
-    git clone https://github.com/yourusername/product-selling-platform.git
-    cd product-selling-platform
+    git clone https://github.com/yagyagoel1/tradewagon
+    cd tradewagon
     ```
 
 2. **Set Up Environment Variables:**
