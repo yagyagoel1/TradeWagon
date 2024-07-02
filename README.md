@@ -1,6 +1,6 @@
-# Product Selling Platform
+# Trade Wagon
 
-Welcome to the Product Selling Platform (e.g., Nike, MamaEarth). This platform is designed to showcase and sell products specifically for your company.This project is not your ordinary product selling platform it has lot of industry stuff used in it like s3,bullmq ,proemtheus, github Actions etc.  The project is built with a focus on scalability, security, and ease of use, leveraging various modern technologies and best practices.
+Welcome to the Trade Wagon(e.g., Nike, MamaEarth). This platform is designed to showcase and sell products specifically for your company.This project is not your ordinary product selling platform it has lot of industry stuff used in it like s3,bullmq ,proemtheus, github Actions etc.  The project is built with a focus on scalability, security, and ease of use, leveraging various modern technologies and best practices.
 
 ## Key Features
 
